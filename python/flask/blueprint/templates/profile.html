@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block pagebody %}
+    {% if user %}
+        Welcome to the web app, {{user}}!
+    {% else %}
+        Welcome to the web app, anonymous!<br />
+        The following users are registered:
+        <ul>
+            {%for u in reg%}
+            <li>{{u}}</li>
+            {%endfor%}
+        </ul>
+        Insert your username:
+        <form action="/login" method="POST">
+            <input name="user" type="text">
+            <input type="submit">
+        </form>
+    {% endif %}
+{% endblock %}

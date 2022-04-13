@@ -1,0 +1,28 @@
+/* element selector */
+p {
+	color: blue;
+}
+
+/* id selector */
+#joke {
+	background-color: yellow;
+	display: inline;
+}
+
+/* class selector */
+.cool {
+	color: red;
+}
+
+#contact {
+	border-style: solid;
+	border-width: 1px;
+	margin: 1em;
+	padding: 1em;
+}
+
+/* class selector solo per elementi di tipo input */
+input.large {
+	width: 80%;
+	padding: 1em;
+}
