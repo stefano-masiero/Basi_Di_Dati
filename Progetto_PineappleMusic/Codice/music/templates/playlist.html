@@ -1,0 +1,76 @@
+{% extends 'menu.html' %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('music.static',filename='css/style.css') }}">
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="{{ url_for('music.static', filename='js/playlist.js')}}"></script>
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-center dashboard-content px-3 pt-4  text-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-6">
+                <h1>Create Your Playlists</h1>
+                <div>
+                    <form method="POST" action="{{ url_for('music.playlist') }}">
+                        {{ form.csrf_token }}
+                        <div class="row gx-3 mb-3 justify-content-center">
+                            <div class="col-md-6 ">
+                                {{ form.name.label(class="small mb-1")}}
+                                {{ form.name(class="form-control")}}
+                            </div>
+                        </div>
+                        {{ form.submit(class="btn btn-success")}}
+                    </form>
+
+                    {% for message in get_flashed_messages()%}
+                    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                        {{message}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {%endfor%}
+
+                </div>
+            </div>
+            <div class="col-3"></div>
+            <div class="col-12 table-responsive">
+                <table id="playlisttable" class="table table-striped" style="width:100%">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Name</th>
+                            <th>Creation Date</th>
+                            <th>Play Playlist</th>
+                            <th>Delete Playlist</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in playlist %}
+                        <tr class="table-light">
+                            <form method="POST" action="{{ url_for('music.getsongfromplaylist') }}">
+                                {{ playlistform.csrf_token }}
+                                <td>{{item.name}}{{playlistform.name(value=item.name)}}{{
+                                    playlistform.playlistid(value=item.idlist)}}</td>
+                                <td>{{item.creationdate}}</td>
+                                <td>{{playlistform.submit(class="btn btn-primary",value="Listen")}}</td>
+                            </form>
+                            <form method="POST" action="{{ url_for('music.playlist') }}">
+                                {{ delete_playlist.csrf_token }}
+                                {{delete_playlist.playlistid(value=item.idlist)}}
+                                <td>{{delete_playlist.submit(class="btn btn-danger",value="Delete")}}</td>
+                            </form>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

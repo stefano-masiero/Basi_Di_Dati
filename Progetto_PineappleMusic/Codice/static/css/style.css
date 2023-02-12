@@ -1,0 +1,97 @@
+body {
+    background: #eee;
+    font-size: 14px;
+}
+
+#side_nav {
+    background: #000;
+    min-width: 16.66666667%;
+    max-width: 16.66666667%;
+    transition: all 0.3s;
+    position: relative
+}
+
+#exitaccount {
+    position: absolute;
+    bottom: 0;
+    left: 3px;
+}
+
+.content {
+    min-height: 100vh;
+    width: 100%;
+}
+
+hr.h-color {
+    background: #eee;
+}
+
+.sidebar li.active {
+    background: #eee;
+    border-radius: 8px;
+}
+
+.sidebar li.active a,
+.sidebar li.active a:hover {
+    color: #000;
+}
+
+.sidebar li a {
+    color: #fff;
+}
+
+.sidebar li i {
+    margin-right: 1rem;
+}
+
+@media(max-width: 767px) {
+    #side_nav {
+        margin-left: -58.33333333%;
+        position: fixed;
+        min-height: 100vh;
+        z-index: 11;
+        
+        min-width: 58.33333333%;
+        max-width: 58.33333333%;
+    }
+
+
+    .music-player {
+        width: 100%;
+    }
+    
+}
+
+
+
+#side_nav.active {
+    margin-left: 0;
+}
+
+/*footer music*/
+
+
+* {
+    box-sizing: border-box;
+    font-family: "circular std book", sans-serif;
+}
+
+
+.card .img {
+    width: 100%;
+    height: 10rem;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.card-music {
+    transition: transform 0.2s ease;
+    box-shadow: 0 4px 6px 0 rgba(22, 22, 26, 0.18);
+    border-radius: 0;
+    border: 0;
+    margin-bottom: 1.5em;
+  }
+  .card-music:hover {
+    transform: scale(1.1);
+  }

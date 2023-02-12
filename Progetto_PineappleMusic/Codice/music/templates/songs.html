@@ -1,0 +1,236 @@
+{% extends 'menu.html' %}
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('music.static',filename='css/style.css') }}">
+{% endblock %}
+{% block js %}
+<script type="text/javascript" src="{{ url_for('music.static', filename='js/music.js')}}"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            select: {
+                style: 'single'
+            }
+        });
+
+        var table = $('#example').DataTable();
+
+        $('#example tbody').on('click', 'tr', function (e) {
+
+            var text = e.target.nodeName;
+            var view="false";
+
+            if (text != "DIV" && text != "BUTTON" && text != "INPUT"&& text != "I") {
+                var data = table.row(this).data();
+                $("#coverplayer").attr("src", "https://drive.google.com/uc?export=view&id=" + $($(this).find("input")[0]).val());
+                $("#title-song").text(data[2]);
+                $("#artist-song").text(data[1]);
+                $("#songnumber").val($($(this).find("input")[3]).val());
+                $("#playerhidden").attr("src", "https://docs.google.com/uc?export=open&id=" + $($(this).find("input")[2]).val());
+                $("#playerhidden").trigger("play");
+                $('#playpause').attr('class', 'fa fa-light fa-pause');
+
+                $("#playerhidden").on('loadedmetadata', function () {
+                    var audioCurrentTime = document.getElementById("playerhidden").duration;
+                    $("#time-dur").text(convert_to_time(audioCurrentTime));
+                });
+
+                view="true";
+
+            }
+
+            if(text=="I"){
+                if ($(e.target).attr('class') == 'voteUp fa-regular fa-thumbs-up') {
+                    $(e.target).attr('class', 'voteUp fa-solid fa-thumbs-up');
+                    $(e.target).attr('vote','up');
+                    e.target.parentElement.children[2].classList='voteDown fa-regular fa-thumbs-down';
+                    e.target.parentElement.children[2].setAttribute('vote','null');
+                } else if($(e.target).attr('class') == 'voteUp fa-solid fa-thumbs-up'){
+                    $(e.target).attr('class', 'voteUp fa-regular fa-thumbs-up');
+                    $(e.target).attr('vote','null');
+                } else if($(e.target).attr('class') == 'voteDown fa-regular fa-thumbs-down') {
+                    $(e.target).attr('class', 'voteDown fa-solid fa-thumbs-down');
+                    $(e.target).attr('vote','down');
+                    e.target.parentElement.children[0].classList='voteUp fa-regular fa-thumbs-up';
+                    e.target.parentElement.children[0].setAttribute('vote','null');
+                } else {
+                    $(e.target).attr('class', 'voteDown fa-regular fa-thumbs-down');
+                    $(e.target).attr('vote','null');
+                }
+            }
+
+                var csrf_token = "{{ csrf_token() }}";
+
+                $.ajax({
+                    type: "POST",
+                    headers: {
+                        "X-CSRFToken": csrf_token,
+                        "Content-Type": "application/json"
+                    },
+                    url: "/music/views",
+                    data: JSON.stringify({ "idsong": $($(this).find("input")[1]).val(),"upvote":  $($(this).find(".voteUp")).attr("vote"),"downvote":  $($(this).find(".voteDown")).attr("vote"),"view":view}),
+                    success: function (response) {
+                        console.log(response);
+                    },
+                    error: function (response, error) {
+                        console.log(response);
+                        console.log(error);
+                    }
+                });
+
+        });
+
+        
+
+        $("#progress-bar-song").on("click", function (e) {
+            var pos_curr = e.pageX - $("#progress-bar-song").offset().left; //Position cursor
+            var size_bar = document.getElementById("progress-bar-song").offsetWidth;
+            $('#time-bar').attr('style', "width:" + pos_curr * 100 / size_bar + "%;");
+            var duration = document.getElementById("playerhidden").duration;
+            document.getElementById("playerhidden").currentTime = duration / 100 * pos_curr * 100 / size_bar;
+        });
+
+
+        $("#progress-bar-vol").on("click", function (e) {
+            var pos_curr = e.pageX - $("#progress-bar-vol").offset().left; //Position cursor
+            var size_bar = document.getElementById("progress-bar-vol").offsetWidth;
+            var vol = pos_curr * 100 / size_bar;
+            $('#progress-bar-vol-contr').attr('style', "width:" + parseFloat(vol.toFixed(1)) + "%;");
+            document.getElementById("playerhidden").volume = pos_curr / size_bar;
+            $('#icon-volume').attr('class', 'fas fa-volume-down');
+        });
+
+    });
+</script>
+
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid song-list">
+
+    <div class="col-12">
+        <h1 class="text-center">{{page_name}}</h1>
+    </div>
+
+    <audio id="playerhidden" controls autoplay hidden>
+        <source type="audio/mpeg">
+    </audio>
+    <input type="hidden" id="songnumber">
+
+    <div class="col-12 table-responsive">
+        <table id="example" class="table table-striped" style="width:100%">
+            <thead class="table-dark">
+                <tr>
+                    <th>Cover</th>
+                    <th>Artist</th>
+                    <th>Name</th>
+                    <th>Album</th>
+                    <th>Genre</th>
+                    <th>Vote</th>
+                    {% if add_to_playlist%}
+                    <th>Add to Playlist</th>
+                    {% endif %}
+                    {% if delete_from_playlist%}
+                    <th>Delete from playlist</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% set i = namespace(value=0) %}
+                {% for item in listsong %}
+                <tr class="table-light">
+                    <td><img src="https://drive.google.com/uc?export=view&id={{item[0].cover}}" height="50" width="50">
+                        <input type="hidden" value="{{item[0].cover}}">
+                        <input type="hidden" value="{{item[0].idsong}}">
+                        <input type="hidden" value="{{item[0].content}}">
+                        <input type="hidden" id='listsong' value="{{i.value}}">
+                        {% set i.value = i.value + 1 %}
+                    </td>
+                    <input type="hidden" value="{{item[0].cover}}">
+                    <input type="hidden" value="{{item[0].idsong}}">
+                    <td>{{item.username}}</td>
+                    <td>{{item[0].name}}</td>
+                    <td>{{item.name}}</td>
+                    <td>{{item.genre}}</td>
+                    {% if item[6]==True %}
+                        <td><i class="voteUp fa-solid fa-thumbs-up" vote="up"></i> <p>    </p> <i class="voteDown fa-regular fa-thumbs-down" vote="null" ></i></td>
+                    {% elif item[6]==False %}
+                        <td><i class="voteUp fa-regular fa-thumbs-up" vote="null"></i> <p>    </p>    <i class="voteDown fa-solid fa-thumbs-down" vote="down"></i></td>
+                    {% else %}
+                        <td><i class="voteUp fa-regular fa-thumbs-up" vote="null"></i> <p>    </p> <i class="voteDown fa-regular fa-thumbs-down" vote="null"></i></td>
+                    {% endif %}
+                    {% if add_to_playlist%}
+                    <td>
+                        <form method="POST" action="{{ url_for('music.search') }}">
+                            {{ form.csrf_token }}
+                            {{ form.songid(value=item[0].idsong)}}
+                            {{
+                            form.playlist(class="selectpicker",multiple=True,**{"data-live-search":"true","title":"List
+                            of your playlist"})}}
+                            {{ form.submit(class="btn btn-success")}}
+                        </form>
+                    </td>
+                    {% endif %}
+                    
+                    {% if delete_from_playlist%}
+                    <form method="POST" action="{{ url_for('music.getsongfromplaylist') }}">
+                        {{ delete_form.csrf_token }}
+                        {{ delete_form.idsong(value=item[0].idsong)}}
+                        {{ delete_form.playlistid(value=playlistid)}}
+                        <td>{{ delete_form.submit(class="btn btn-danger")}}</td>
+                    </form>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+<input type="hidden" id="maxsongnumber" value="{{i.value}}">
+
+
+<div class="music-player col-10">
+    <div class="song-bar" n>
+        <div class="song-infos">
+            <div class="image-container">
+                <img id="coverplayer" src="{{ url_for('static', filename='img/pineapplemusic.ico')}}" style='height: 100%; width: 100%; object-fit: contain' alt="cover" />
+            </div>
+            <div class="song-description">
+                <p class="title" id="title-song">
+
+                </p>
+                <p class="artist" id="artist-song">Artist Name</p>
+            </div>
+        </div>
+
+    </div>
+    <div class="progress-controller">
+        <div class="control-buttons">
+            <i class="fas fa-step-backward" id="backsong"></i>
+            <i class="play-pause fas fa-play" id="playpause"></i>
+            <i class="fas fa-step-forward" id="nextsong"></i>
+            <i class="fas fa-undo-alt" id="repeatsong"></i>
+        </div>
+        <div class="progress-container">
+            <span id="time-att">0:00</span>
+            <div class="progress-bar" id="progress-bar-song">
+                <div class="progress " id="time-bar" style="width: 0%;"></div>
+            </div>
+            <span id="time-dur">3:15</span>
+        </div>
+    </div>
+
+    <div class="other-features">
+
+        <div class="volume-bar">
+            <i class="fas fa-volume-down" id="icon-volume"></i>
+            <div class="progress-bar" id="progress-bar-vol">
+                <div class="progress" id="progress-bar-vol-contr" style="width: 100%;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

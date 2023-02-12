@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>{{title}} - PinappleMusic</title>
+
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/pineapplemusic.ico')}}">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/datatable-bootstrap.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-select.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
+    {% block css %}{% endblock %}
+    
+</head>
+
+<body>
+    {% block pagebody %}{% endblock %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.6.0.min.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/popper.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap-select.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-datatable.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/datatable-bootstrap.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/datatable-select.js')}}"></script>
+    
+
+    
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome.js')}}"></script>
+    <!--import icons-->
+    {% block js %}{% endblock %}
+</body>
+</html>

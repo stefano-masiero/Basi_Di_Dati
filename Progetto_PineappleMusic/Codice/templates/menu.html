@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block pagebody %}
+
+
+
+<div class="main-container d-flex">
+    <!--black sidebar-->
+    <div class="sidebar" id="side_nav">
+        <div class="head-box px-2 pt-3 pb-4 d-flex justify-content-between">
+            <h1 class="fs-4">
+                <img class="mb-4" src="{{ url_for('static',filename='img/pineapplemusic.ico') }}" alt="logo" width="36"
+                    height="50">
+                <span class="text-white">PineappleMusic</span>
+            </h1>
+            <button class="btn d-mb-none d-block close-btn px-1 py-0 text-white d-md-none d-block">
+                <i class="fa-solid fa-bars-staggered"></i>
+            </button>
+        </div>
+        <ul class="list-unstyled px-2">
+            <li><a href="{{url_for('user.home')}}" class="text-decoration-none px-3 py-2 d-block"><i
+                        class="fa-solid fa-house"></i>Home</a></li>
+            <li><a href="{{url_for('music.search')}}" class="text-decoration-none px-3 py-2 d-block"><i
+                        class="fa-solid fa-magnifying-glass"></i>Search</a></li>
+
+
+            <li><a href="{{url_for('music.playlist')}}" class="text-decoration-none px-3 py-2 d-block"><i
+                        class="fa-solid fa-list-ol"></i>Playlist</a></li>
+            <li><a href="{{url_for('user.profile')}}" class="text-decoration-none px-3 py-2 d-block"><i
+                        class="fa-solid fa-user"></i>Profile</a></li>
+            
+            {% if user.type_account == 1%}
+                <li><a href="{{url_for('user.premium')}}" class="text-decoration-none px-3 py-2 d-block">
+                    <i class="fa-solid fa-star"></i>Premium</a></li>
+            {% endif%}
+
+            {% if user.type_account == 3%}
+                <li><a href="{{url_for('artist.album')}}" class="text-decoration-none px-3 py-2 d-block">
+                    <i class="fa-solid fa-compact-disc"></i>Album</a></li>
+                
+                <li><a href="{{url_for('artist.song')}}" class="text-decoration-none px-3 py-2 d-block">
+                    <i class="fa-solid fa-music"></i>Song</a></li>
+                
+                <li><a href="{{url_for('artist.statistics')}}" class="text-decoration-none px-3 py-2 d-block">
+                    <i class="fa-solid fa-gauge-high"></i>Statistics</a></li>
+            {% endif%}
+        </ul>
+        <!--bottom part of sidebar that contains name to exit from account-->
+        <hr class="h-color mx-2">
+        <div class=" d-block " id="exitaccount">
+            <ul class="list-unstyled px-2">
+                <li>
+                    <a href="{{url_for('auth.signout')}}" class="text-decoration-none px-3 py-2 ">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        {{user.username}}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!--top bar seen by phone/small screen-->
+    <div class="content " style="background-color: #FFFFFF"  >
+        <nav class="navbar navbar-expand-md navbar-light d-md-none d-block" style="background-color: #000">
+            <div class="container-fluid">
+                <div class="d-flex justify-content-between d-md-none d-block">
+                    <a class="navbar-brand fs-4 text-white" href="#">Pineapple Music</a>
+                    <button class="btn px-1 py-0 open-btn text-white"><i class="fa-solid fa-bars-staggered"></i></button>
+                </div>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                </div>
+            </div>
+        </nav>
+   
+    {% block content %}
+    {% endblock %}
+    </div>
+</div>
+
+{% endblock %}
+
+
+
+
